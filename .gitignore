@@ -1,0 +1,12 @@
+.idea
+.vscode
+dist
+.tmp
+bower_components
+test
+test/bower_components
+node_modules
+public/screenshots
+npm-debug.log
+server.log
+screen_*.png

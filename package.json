@@ -1,0 +1,17 @@
+{
+  "name": "10kolorsScreen",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "version": "0.0.1",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "ejs": "2.5.1",
+    "express": "^4.9.8",
+    "node-server-screenshot": "0.0.2"
+  },
+  "engines": {
+    "node": "4.1.1"
+  }
+}

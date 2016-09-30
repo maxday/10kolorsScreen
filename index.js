@@ -1,6 +1,7 @@
 var express     = require("express");
 var fs         = require('fs');
-var screenshot         = require("node-server-screenshot");
+var guid = require('guid');
+var childProcess = require('child_process');
 
 var port = process.env.PORT || 8080;
 
@@ -19,12 +20,29 @@ app.get('/', function (request, response) {
 });
 
 app.get('/screenshot/', function (request, response) {
-  var filename = "screen_" + (new Date().getTime()) + Math.random() + ".png";
-  console.log(filename);
-  console.log(request.query.scrSht);
-  screenshot.fromURL(request.query.scrSht, "public/" + filename, function(e){
-    console.log("screen OK");
-    response.status(200).send({ "success" : "static/" + filename});
+
+  var filename = guid.raw() + '.png';
+  var filenameFull = './public/' + filename;
+  var childArgs = [
+    'rasterize.js',
+    request.query.scrSht,
+    filenameFull,
+    '',
+    1
+  ];
+
+  //grap the screen
+  childProcess.execFile('bin/phantomjs', childArgs, function(error, stdout, stderr){
+    console.log("Grabbing screen for: " + request.body.address);
+    if(error !== null) {
+      console.log("Error capturing page: " + error.message + "\n for address: " + childArgs[1]);
+      return response.json(500, { 'error': 'Problem capturing page.' });
+    } else {
+      //load the saved file
+      fs.readFile(filenameFull, function(err, temp_png_data){
+        return response.json(200, { 'success': filenameFull.replace("public", "static") });
+      });
+    }
   });
 
 })
